@@ -77,6 +77,7 @@ const StudentHome = () => {
   const handleDelete = (etudiant: Etudiant, e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch(deleteEtudiantAsync(etudiant.noEtudiantNat));
+    dispatch(getEtudiantAsync());
   };
 
   return (
@@ -177,7 +178,7 @@ const StudentHome = () => {
           </table>
         </div>
       </div>
-      <dialog ref={addStudentModalRef} className="modal">
+      <dialog id="addStudent" className="modal">
         <AddStudent />
       </dialog>
     </>
