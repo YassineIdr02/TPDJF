@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/api";
+const BASE_URL = "http://localhost:8092/api";
 
 export interface Etudiant {
     nom: string;
@@ -9,36 +9,63 @@ export interface Etudiant {
     sexe: string;
     email: string;
     telephone: string;
-    noEtudiantUbo : string,
-    dateNaissance: string; // Format ISO "YYYY-MM-DD"
+    noEtudiantUbo: string,
+    noEtudiantNat: number,
+    dateNaissance: string;
     lieuNaissance: string;
-    nationalite?: string; // Optionnelle, valeur par défaut: "Française"
+    nationalite?: string;
     universite: string;
-    promotion: string; // Peut contenir l'année ou le nom de la promotion
+    promotion: string;
     adresse: string;
 }
 
+export interface Promotion {
+    id: number;
+    anneePro: string;
+    sigle: string;
+    nbEtudiant: number;
+    dateRentree: string;
+    lieuRentree: string;
+}
+
 interface etudiantState {
-    Etudiant:  Etudiant,
+    Promotions: Promotion[];
+    Etudiant: Etudiant,
     Etudiants: Etudiant[];
 }
 
 const initialState: etudiantState = {
-  Etudiant: {} as Etudiant,
-  Etudiants: []
+    Etudiant: {} as Etudiant,
+    Etudiants: [],
+    Promotions: [],
 };
+
+export const getPromotionAsync = createAsyncThunk<Promotion[], void, { rejectValue: string }>(
+    "promotions/getPromotionAsync",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get<Promotion[]>(`${BASE_URL}/promotions`);
+            console.log(response);
+
+            return response.data;
+        } catch (error: any) {
+            console.error("Error fetching machines:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while fetching machines.");
+        }
+    }
+);
 
 export const getEtudiantAsync = createAsyncThunk<Etudiant[], void, { rejectValue: string }>(
     "etudiants/getEtudiantAsync",
     async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get<Etudiant[]>(`${BASE_URL}/etudiants`);
-            console.log(response);
-            
+            console.log("hhhhhhh");
+
             return response.data;
         } catch (error: any) {
-            console.error("Error fetching machines:", error);
-            return rejectWithValue(error.response?.data || "An error occurred while fetching machines.");
+            console.error("Error fetching students:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while fetching students.");
         }
     }
 );
@@ -69,7 +96,7 @@ export const updateEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { reject
     }
 );
 
-export const deleteEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { rejectValue: string }>(
+export const deleteEtudiantAsync = createAsyncThunk<Etudiant, Number, { rejectValue: string }>(
     "etudiants/deleteEtudiantAsync",
     async (id, { rejectWithValue }) => {
         try {
@@ -83,19 +110,23 @@ export const deleteEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { reject
 );
 
 const etudiantSlice = createSlice({
-  name: "etudiant",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(getEtudiantAsync.fulfilled, (state, action) => {
-        state.Etudiants = action.payload;
-      })
-      
-  },
+    name: "etudiant",
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(getEtudiantAsync.fulfilled, (state, action) => {
+                state.Etudiants = action.payload;
+            })
+            .addCase(getPromotionAsync.fulfilled, (state, action) => {
+                state.Promotions = action.payload;
+            })
+    },
 });
 
 export const getEtudiants = (state: { etudiant: etudiantState }) => state.etudiant.Etudiants;
+
+export const getPromotions = (state: { etudiant: etudiantState }) => state.etudiant.Promotions;
 
 
 export default etudiantSlice.reducer;

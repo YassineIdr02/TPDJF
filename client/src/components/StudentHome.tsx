@@ -4,8 +4,11 @@ import {
   Etudiant,
   getEtudiantAsync,
   getEtudiants,
+  getPromotionAsync,
+  getPromotions,
   updateEtudiantAsync,
 } from "../features/EtudiantSlice";
+import { IoMdAdd } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import AddStudent from "./AddStudent";
 import EtudiantDetails from "./EtudiantDetails";
@@ -23,10 +26,12 @@ const StudentHome = () => {
 
   const dispatch = useAppDispatch();
   const etudiants = useAppSelector(getEtudiants);
+  const promotions = useAppSelector(getPromotions);
 
   useEffect(() => {
-    dispatch(getEtudiantAsync);
-  }, []);
+    dispatch(getEtudiantAsync());
+    dispatch(getPromotionAsync());
+  }, [dispatch]);
 
   const [modal, setModal] = useState<{
     etudiant: Etudiant | null;
@@ -49,8 +54,9 @@ const StudentHome = () => {
   const handleUpdate = (etudiant: Etudiant) => {
     dispatch(updateEtudiantAsync(etudiant));
   };
+
   const handleDelete = (etudiant: Etudiant) => {
-    dispatch(deleteEtudiantAsync(etudiant));
+    dispatch(deleteEtudiantAsync(etudiant.noEtudiantNat));
   };
 
   const openModalSpec = (name: string) => {
@@ -64,6 +70,24 @@ const StudentHome = () => {
     <>
       <div className="flex flex-col gap-5 items-center pt-32  mx-auto rounded-s-3xl  bg-white w-full h-screen">
         Liste des étudiants
+        <div className="flex flex-row items-center justify-between gap-5 w-full px-4">
+          <select defaultValue="default">
+            <option value="default" disabled>
+              Selectionnez une promotion
+            </option>
+            {promotions.map((promotion, index) => (
+              <option key={index} value={promotion.anneePro}>
+                {promotion.anneePro} : {promotion.sigle}
+              </option>
+            ))}
+          </select>
+          <button
+            className="flex flex-row items-center justify-center gap-5 px-4 py-2 disabled:cursor-not-allowed w-[17%] text-center rounded-md border border-black bg-white text-neutral-700 text-md hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200 "
+            onClick={() => openModal("addStudent")}
+          >
+            <IoMdAdd className="text-black" /> Ajouter un étudiant
+          </button>
+        </div>
         <div className="overflow-y-auto w-[90%] ">
           <table className="table table-zebra">
             <thead>
@@ -94,40 +118,47 @@ const StudentHome = () => {
                   <td className="px-4 py-2">{etudiant.email}</td>
                   <td className="px-4 py-2">{etudiant.promotion}</td>
                   <td className="px-4 py-2">{etudiant.universite}</td>
-                  <th onClick={() => handleUpdate(etudiant)}>
-                    <FontAwesomeIcon icon={faPenToSquare} />
+                  <th
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent row click
+                      handleUpdate(etudiant);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="text-black text-base"
+                    />
                   </th>
-                  <th onClick={() => handleDelete(etudiant)}>
-                    <FontAwesomeIcon icon={faTrash} />
+                  <th
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent row click
+                      handleDelete(etudiant);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      className="text-black text-base"
+                    />
                   </th>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <button
-          className="btn btn-success mx-auto"
-          onClick={() => openModal("addStudent")}
-        >
-          <i className="fa-solid fa-plus w-[20px]"></i> Ajouter un étudiant
-        </button>
-        <dialog id="addStudent" className="modal">
-          <AddStudent />
-        </dialog>
-        <dialog id="updateStudent" className="modal">
-          <AddStudent />
-        </dialog>
       </div>
-
-      {modal.etudiant && (
-        <dialog id="addStudent" className="modal">
-          <AddStudent />
-        </dialog>
-      )}
+      <dialog id="addStudent" className="modal">
+        <AddStudent />
+      </dialog>
 
       {modal.etudiant && (
         <dialog id="updateStudent" className="modal">
           <UpdateStudent studentData={modal.etudiant} />
+        </dialog>
+      )}
+
+      {modal.etudiant && (
+        <dialog id={`dialog-${modal.index}`} className="modal">
+          <EtudiantDetails etudiant={modal.etudiant} />
         </dialog>
       )}
     </>

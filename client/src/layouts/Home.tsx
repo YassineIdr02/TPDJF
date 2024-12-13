@@ -1,8 +1,8 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
 import { FaUserGraduate } from "react-icons/fa";
 import { FaClipboardUser } from "react-icons/fa6";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "../lib/utils";
 import StudentHome from "../components/StudentHome";
@@ -11,10 +11,9 @@ export function Home() {
   const links = [
     {
       label: "Etudiants",
-      href: "#",
+      href: "/",
       icon: (
         <FaUserGraduate className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-       
       ),
     },
     {
@@ -24,14 +23,13 @@ export function Home() {
         <FaClipboardUser className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-    
   ];
   const [open, setOpen] = useState(false);
   return (
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border  border-neutral-200 dark:border-neutral-700 overflow-hidden ",
-        "h-screen" 
+        "h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
