@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "../hooks/hooks";
-import { postEtudiantAsync } from "../features/EtudiantSlice";
+import { getEtudiantAsync, postEtudiantAsync } from "../features/EtudiantSlice";
 
 const AddStudent = () => {
     const dispatch = useAppDispatch()
@@ -17,6 +17,7 @@ const AddStudent = () => {
         universite: "",
         promotion: "2024",
         adresse: "",
+        noEtudiantNat: 0,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -25,7 +26,10 @@ const AddStudent = () => {
     };
 
     const handleSubmit = () => {
+       
         dispatch(postEtudiantAsync(student))
+        dispatch(getEtudiantAsync());
+
     };
 
     return (

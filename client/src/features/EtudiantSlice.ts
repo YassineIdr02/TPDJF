@@ -83,11 +83,11 @@ export const postEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { rejectVa
     }
 );
 
-export const updateEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { rejectValue: string }>(
+export const updateEtudiantAsync = createAsyncThunk<Etudiant, Number, { rejectValue: string }>(
     "etudiants/updateEtudiantAsync",
-    async (etudiant, { rejectWithValue }) => {
+    async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`${BASE_URL}/etudiants`, etudiant);
+            const response = await axios.put(`${BASE_URL}/etudiants`, id);
             return response.data;
         } catch (error: any) {
             console.error("Error posting student:", error);

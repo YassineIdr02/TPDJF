@@ -3,10 +3,9 @@ import {
   deleteEtudiantAsync,
   Etudiant,
   getEtudiantAsync,
-  getEtudiants,
   getPromotionAsync,
   getPromotions,
-  updateEtudiantAsync,
+  getEtudiants,
 } from "../features/EtudiantSlice";
 import { IoMdAdd } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
@@ -17,129 +16,105 @@ import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import UpdateStudent from "./UpdateStudent";
 
 const StudentHome = () => {
-  const openModal = (name: string) => {
-    const dialog = document.getElementById(name) as HTMLDialogElement;
-    if (dialog) {
-      dialog.showModal();
-    }
-  };
-
   const dispatch = useAppDispatch();
   const etudiants = useAppSelector(getEtudiants);
   const promotions = useAppSelector(getPromotions);
+
+  const [modal, setModal] = useState<{
+    etudiant: Etudiant | null;
+    index: number;
+  }>({ etudiant: null, index: -1 });
 
   useEffect(() => {
     dispatch(getEtudiantAsync());
     dispatch(getPromotionAsync());
   }, [dispatch]);
 
-  const [modal, setModal] = useState<{
-    etudiant: Etudiant | null;
-    index: number;
-  }>({
-    etudiant: null,
-    index: -1,
-  });
-
   useEffect(() => {
     if (modal.etudiant) {
-      openModalSpec("dialog-" + modal.index);
+      openModal(`dialog-${modal.index}`);
     }
   }, [modal]);
+
+  const openModal = (name: string) => {
+    const dialog = document.getElementById(name) as HTMLDialogElement;
+    if (dialog) dialog.showModal();
+  };
 
   const handleClick = (etudiant: Etudiant, index: number) => {
     setModal({ etudiant, index });
   };
 
-  const handleUpdate = (etudiant: Etudiant) => {
-    dispatch(updateEtudiantAsync(etudiant));
-  };
-
-  const handleDelete = (etudiant: Etudiant) => {
+  const handleDelete = (etudiant: Etudiant, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row click event
     dispatch(deleteEtudiantAsync(etudiant.noEtudiantNat));
-  };
-
-  const openModalSpec = (name: string) => {
-    const dialog = document.getElementById(name) as HTMLDialogElement;
-    if (dialog) {
-      dialog.showModal();
-    }
   };
 
   return (
     <>
-      <div className="flex flex-col gap-5 items-center pt-32  mx-auto rounded-s-3xl  bg-white w-full h-screen">
-        Liste des étudiants
-        <div className="flex flex-row items-center justify-between gap-5 w-full px-4">
-          <select defaultValue="default">
+      <div className="flex flex-col gap-5 items-center pt-32 mx-auto rounded-s-3xl bg-white w-full h-screen">
+        <h1>Liste des étudiants</h1>
+        <div className="flex flex-row items-center justify-between gap-5 w-full px-14">
+          <select defaultValue="default" className="select">
             <option value="default" disabled>
-              Selectionnez une promotion
+              Sélectionnez une promotion
             </option>
-            {promotions.map((promotion, index) => (
-              <option key={index} value={promotion.anneePro}>
+            {promotions.map((promotion) => (
+              <option key={promotion.anneePro} value={promotion.anneePro}>
                 {promotion.anneePro} : {promotion.sigle}
               </option>
             ))}
           </select>
           <button
-            className="flex flex-row items-center justify-center gap-5 px-4 py-2 disabled:cursor-not-allowed w-[17%] text-center rounded-md border border-black bg-white text-neutral-700 text-md hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200 "
+            className="flex flex-row items-center justify-center gap-5 px-4 py-2 disabled:cursor-not-allowed w-[17%] text-center rounded-md border border-black bg-white text-neutral-700 text-md hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
             onClick={() => openModal("addStudent")}
           >
             <IoMdAdd className="text-black" /> Ajouter un étudiant
           </button>
         </div>
-        <div className="overflow-y-auto w-[90%] ">
+        <div className="overflow-y-auto w-[90%]">
           <table className="table table-zebra">
             <thead>
               <tr>
                 <th></th>
-                <th>Name</th>
-                <th>Prenom</th>
+                <th>Nom</th>
+                <th>Prénom</th>
                 <th>Nationalité</th>
                 <th>Email</th>
                 <th>Promotion</th>
                 <th>Université</th>
-                <th>Action</th>
+                <th className="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               {etudiants.map((etudiant: Etudiant, index: number) => (
                 <tr
-                  key={index}
+                  key={etudiant.noEtudiantNat}
                   className="hover:cursor-pointer hover:bg-gray-50 transition-all duration-75"
                   onClick={() => handleClick(etudiant, index)}
                 >
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{etudiant.nom}</td>
                   <td className="px-4 py-2">{etudiant.prenom}</td>
-                  <td className="px-4 py-2">
-                    {etudiant.nationalite || "Française"}
-                  </td>
+                  <td className="px-4 py-2">{etudiant.nationalite || "Française"}</td>
                   <td className="px-4 py-2">{etudiant.email}</td>
                   <td className="px-4 py-2">{etudiant.promotion}</td>
                   <td className="px-4 py-2">{etudiant.universite}</td>
-                  <th
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent row click
-                      handleUpdate(etudiant);
-                    }}
+                  <td
+                    className="flex gap-3 justify-center items-center"
+                    onClick={(e) => e.stopPropagation()} 
                   >
                     <FontAwesomeIcon
                       icon={faPenToSquare}
-                      className="text-black text-base"
+                      className="text-black text-base cursor-pointer"
+                      onClick={() => openModal("updateStudent"+index)}
                     />
-                  </th>
-                  <th
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent row click
-                      handleDelete(etudiant);
-                    }}
-                  >
                     <FontAwesomeIcon
                       icon={faTrash}
-                      className="text-black text-base"
+                      className="text-black text-base cursor-pointer"
+                      onClick={(e) => handleDelete(etudiant, e)}
                     />
-                  </th>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -149,13 +124,11 @@ const StudentHome = () => {
       <dialog id="addStudent" className="modal">
         <AddStudent />
       </dialog>
-
       {modal.etudiant && (
-        <dialog id="updateStudent" className="modal">
+        <dialog id={`updateStudent-${modal.index}`} className="modal">
           <UpdateStudent studentData={modal.etudiant} />
         </dialog>
       )}
-
       {modal.etudiant && (
         <dialog id={`dialog-${modal.index}`} className="modal">
           <EtudiantDetails etudiant={modal.etudiant} />

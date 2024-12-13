@@ -14,6 +14,8 @@ const UpdateStudent = ({ studentData }: UpdateStudentProps) => {
         ...studentData,
     });
 
+    
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
@@ -23,7 +25,7 @@ const UpdateStudent = ({ studentData }: UpdateStudentProps) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(updateEtudiantAsync(student)); 
+        dispatch(updateEtudiantAsync(student.noEtudiantNat)); 
     };
 
     return (
