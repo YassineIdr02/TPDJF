@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   deleteEtudiantAsync,
   Etudiant,
@@ -12,7 +12,11 @@ import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import AddStudent from "./AddStudent";
 import EtudiantDetails from "./EtudiantDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import UpdateStudent from "./UpdateStudent";
 
 const StudentHome = () => {
@@ -25,16 +29,37 @@ const StudentHome = () => {
     index: number;
   }>({ etudiant: null, index: -1 });
 
+  const [modalUpdate, setModalUpdate] = useState<{
+    etudiant: Etudiant | null;
+    index: number;
+  }>({ etudiant: null, index: -1 });
+
+  const addStudentModalRef = useRef<HTMLDialogElement | null>(null);
+  const updateStudentModalRef = useRef<HTMLDialogElement | null>(null);
+  const etudiantDetailsModalRef = useRef<HTMLDialogElement | null>(null);
+
   useEffect(() => {
     dispatch(getEtudiantAsync());
     dispatch(getPromotionAsync());
   }, [dispatch]);
 
   useEffect(() => {
-    if (modal.etudiant) {
-      openModal(`dialog-${modal.index}`);
+    if (
+      modal.etudiant &&
+      modal.index !== -1 &&
+      etudiantDetailsModalRef.current
+    ) {
+      etudiantDetailsModalRef.current.showModal();
     }
-  }, [modal]);
+
+    if (
+      modalUpdate.etudiant &&
+      modalUpdate.index !== -1 &&
+      updateStudentModalRef.current
+    ) {
+      updateStudentModalRef.current.showModal();
+    }
+  }, [modal, modalUpdate]);
 
   const openModal = (name: string) => {
     const dialog = document.getElementById(name) as HTMLDialogElement;
@@ -45,8 +70,12 @@ const StudentHome = () => {
     setModal({ etudiant, index });
   };
 
+  const handleClickUpdate = (etudiant: Etudiant, index: number) => {
+    setModalUpdate({ etudiant, index });
+  };
+
   const handleDelete = (etudiant: Etudiant, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent row click event
+    e.stopPropagation();
     dispatch(deleteEtudiantAsync(etudiant.noEtudiantNat));
   };
 
@@ -91,49 +120,66 @@ const StudentHome = () => {
                 <tr
                   key={etudiant.noEtudiantNat}
                   className="hover:cursor-pointer hover:bg-gray-50 transition-all duration-75"
-                  onClick={() => handleClick(etudiant, index)}
                 >
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{etudiant.nom}</td>
                   <td className="px-4 py-2">{etudiant.prenom}</td>
-                  <td className="px-4 py-2">{etudiant.nationalite || "Française"}</td>
+                  <td className="px-4 py-2">
+                    {etudiant.nationalite || "Française"}
+                  </td>
                   <td className="px-4 py-2">{etudiant.email}</td>
                   <td className="px-4 py-2">{etudiant.promotion}</td>
                   <td className="px-4 py-2">{etudiant.universite}</td>
                   <td
                     className="flex gap-3 justify-center items-center"
-                    onClick={(e) => e.stopPropagation()} 
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <FontAwesomeIcon
                       icon={faPenToSquare}
                       className="text-black text-base cursor-pointer"
-                      onClick={() => openModal("updateStudent"+index)}
+                      onClick={() => {
+                        handleClick({} as Etudiant, index);
+                        handleClickUpdate({} as Etudiant, index);
+                        handleClickUpdate(etudiant, index);
+                        openModal(`updateStudent-${etudiant.noEtudiantNat}`);
+                      }}
                     />
                     <FontAwesomeIcon
                       icon={faTrash}
                       className="text-black text-base cursor-pointer"
                       onClick={(e) => handleDelete(etudiant, e)}
                     />
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="text-black text-base cursor-pointer"
+                      onClick={() => {
+                        handleClick({} as Etudiant, index);
+                        handleClickUpdate({} as Etudiant, index);
+                        handleClick(etudiant, index);
+                        openModal(`inspect-${etudiant.noEtudiantNat}`);
+                        
+                        
+                      }}
+                    />
                   </td>
+                  <dialog
+                    id={`updateStudent-${etudiant.noEtudiantNat}`}
+                    className="modal"
+                  >
+                    <UpdateStudent studentData={etudiant} />
+                  </dialog>
+                  <dialog id={`inspect-${etudiant.noEtudiantNat}`} className="modal">
+                    <EtudiantDetails etudiant={etudiant} />
+                  </dialog>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-      <dialog id="addStudent" className="modal">
+      <dialog ref={addStudentModalRef} className="modal">
         <AddStudent />
       </dialog>
-      {modal.etudiant && (
-        <dialog id={`updateStudent-${modal.index}`} className="modal">
-          <UpdateStudent studentData={modal.etudiant} />
-        </dialog>
-      )}
-      {modal.etudiant && (
-        <dialog id={`dialog-${modal.index}`} className="modal">
-          <EtudiantDetails etudiant={modal.etudiant} />
-        </dialog>
-      )}
     </>
   );
 };
