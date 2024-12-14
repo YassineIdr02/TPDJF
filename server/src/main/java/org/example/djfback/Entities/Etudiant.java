@@ -1,5 +1,5 @@
 package org.example.djfback.Entities;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,10 +16,6 @@ public class Etudiant {
 
     public void setNoEtudiantNat(Integer noEtudiantNat) {
         this.noEtudiantNat = noEtudiantNat;
-    }
-
-    public void setPromotion(String promotion) {
-        this.promotion = promotion;
     }
 
     public void setNoEtudiantUbo(String noEtudiantUbo) {
@@ -91,8 +87,10 @@ public class Etudiant {
     @Column(name = "no_etudiant_nat")  // Custom column name (if needed)
     private Integer noEtudiantNat;
 
-    @Column(name = "promotion")
-    private String promotion;
+    @ManyToOne
+    @JsonIgnore
+    private Promotion promotion;
+
 
     @Column(name = "no_etudiant_ubo")
     private String noEtudiantUbo;
@@ -120,6 +118,14 @@ public class Etudiant {
     @Column(name = "telephone")
     private String telephone;
 
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
+    }
+
     @Column(name = "email")
     private String email;
 
@@ -129,9 +135,6 @@ public class Etudiant {
     @Column(name = "universite")
     private String universite;
 
-    public String getPromotion() {
-        return promotion;
-    }
 
     public String getNoEtudiantUbo() {
         return noEtudiantUbo;

@@ -1,5 +1,5 @@
 package org.example.djfback.Controller;
-
+import org.example.djfback.DTOs.EtudiantDTO;
 import org.example.djfback.Entities.Etudiant;
 import org.example.djfback.Services.EtudiantService;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,17 +22,15 @@ public class EtudiantController {
 
     // Get all Etudiants
     @GetMapping
-    public ResponseEntity<List<Etudiant>> getAllEtudiants() {
-        List<Etudiant> etudiants = etudiantService.getAllEtudiants();
-
+    public ResponseEntity<List<EtudiantDTO>> getAllEtudiants() {
+        List<EtudiantDTO> etudiants = etudiantService.getAllEtudiants();
         System.out.println(etudiants);
-
         return new ResponseEntity<>(etudiants, HttpStatus.OK);
     }
 
     // Get Etudiant by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Etudiant> getEtudiantById(@PathVariable Integer id) {
+    public ResponseEntity<EtudiantDTO> getEtudiantById(@PathVariable Integer id) {
         return etudiantService.getEtudiantById(id)
                 .map(etudiant -> new ResponseEntity<>(etudiant, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -40,23 +38,22 @@ public class EtudiantController {
 
     // Create a new Etudiant
     @PostMapping
-    public ResponseEntity<Etudiant> createEtudiant(@RequestBody Etudiant etudiant) {
+    public ResponseEntity<Etudiant> createEtudiant(@RequestBody EtudiantDTO etudiant) {
         Etudiant createdEtudiant = etudiantService.saveEtudiant(etudiant);
         return new ResponseEntity<>(createdEtudiant, HttpStatus.CREATED);
     }
 
     // Update an existing Etudiant
-   /* @PutMapping("/{id}")
-    public ResponseEntity<Etudiant> updateEtudiant(
+    @PutMapping("/{id}")
+    public void updateEtudiant(
             @PathVariable Integer id,
-            @RequestBody Etudiant etudiant) {
+            @RequestBody EtudiantDTO etudiant) {
         try {
-            Etudiant updatedEtudiant = etudiantService.updateEtudiant(id, etudiant);
-            return new ResponseEntity<>(updatedEtudiant, HttpStatus.OK);
+            etudiantService.updateEtudiant(id, etudiant);
+
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }*/
+
+        }    }
 
     // Delete an Etudiant
     @DeleteMapping("/{id}")
@@ -69,5 +66,3 @@ public class EtudiantController {
         }
     }
 }
-
-
