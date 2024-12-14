@@ -20,8 +20,8 @@ const AddStudent = () => {
     lieuNaissance: "",
     nationalite: "Française",
     universite: "",
-    promotion: "2024",  // Default promotion
     adresse: "",
+    anneePro: -1,  
     noEtudiantNat: 0,
   });
 
@@ -43,6 +43,7 @@ const AddStudent = () => {
       student.prenom &&
       student.sexe &&
       student.telephone &&
+      student.anneePro !== -1 &&
       student.universite
     )
       dispatch(postEtudiantAsync(student));
@@ -118,23 +119,16 @@ const AddStudent = () => {
 
             <label className="flex items-center gap-2">
               <span className="font-semibold">Promotion</span>
-              <select
-                required
-                defaultValue="default"
-                name="promotion"
-                value={student.promotion}
-                onChange={handleChange}
-                className="select select-bordered w-full max-w-full"
-              >
-                <option disabled value="default">
-                  Sélectionnez une promotion
-                </option>
-                {promotions.map((promotion, index) => (
-                  <option key={index} value={promotion.anneePro}>
-                    {promotion.anneePro} : {promotion.sigle}
-                  </option>
-                ))}
-              </select>
+              <select defaultValue="default" className="select" name="anneePro" value={student.anneePro} onChange={handleChange}>
+            <option value="default" disabled>
+              Sélectionnez une promotion
+            </option>
+            {promotions.map((promotion) => (
+              <option key={promotion.anneePro} value={promotion.anneePro}>
+                {promotion.anneePro} : {promotion.siglePro}
+              </option>
+            ))}
+          </select>
             </label>
 
             <label className="input input-bordered flex items-center gap-2">

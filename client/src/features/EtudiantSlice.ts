@@ -15,14 +15,14 @@ export interface Etudiant {
     lieuNaissance: string;
     nationalite?: string;
     universite: string;
-    promotion: string;
+    anneePro: number;
     adresse: string;
 }
 
 export interface Promotion {
     id: number;
     anneePro: string;
-    sigle: string;
+    siglePro: string;
     nbEtudiant: number;
     dateRentree: string;
     lieuRentree: string;

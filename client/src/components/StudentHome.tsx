@@ -90,7 +90,7 @@ const StudentHome = () => {
             </option>
             {promotions.map((promotion) => (
               <option key={promotion.anneePro} value={promotion.anneePro}>
-                {promotion.anneePro} : {promotion.sigle}
+                {promotion.anneePro} : {promotion.siglePro}
               </option>
             ))}
           </select>
@@ -128,7 +128,7 @@ const StudentHome = () => {
                     {etudiant.nationalite || "Française"}
                   </td>
                   <td className="px-4 py-2">{etudiant.email}</td>
-                  <td className="px-4 py-2">{etudiant.promotion}</td>
+                  <td className="px-4 py-2">{etudiant.anneePro}</td>
                   <td className="px-4 py-2">{etudiant.universite}</td>
                   <td
                     className="flex gap-3 justify-center items-center"
