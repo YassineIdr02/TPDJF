@@ -70,6 +70,21 @@ export const getEtudiantAsync = createAsyncThunk<Etudiant[], void, { rejectValue
     }
 );
 
+export const getEtudiantByPromotionAsync = createAsyncThunk<Etudiant[], Number, { rejectValue: string }>(
+    "students/getEtudiantByPromotionAsync",
+    async (anneePro, { rejectWithValue }) => {
+        try {
+            const response = await axios.get<Etudiant[]>(`${BASE_URL}/promotions/students/${anneePro}`);
+            console.log("prooooo", anneePro);
+            
+            return response.data;
+        } catch (error: any) {
+            console.error("Error fetching students:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while fetching students.");
+        }
+    }
+);
+
 export const postEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { rejectValue: string }>(
     "etudiants/postEtudiantAsync",
     async (etudiant, { rejectWithValue }) => {
@@ -121,10 +136,14 @@ const etudiantSlice = createSlice({
             .addCase(getPromotionAsync.fulfilled, (state, action) => {
                 state.Promotions = action.payload;
             })
+            .addCase(getEtudiantByPromotionAsync.fulfilled, (state, action) => {
+                state.Etudiants = action.payload;
+            })
     },
 });
 
 export const getEtudiants = (state: { etudiant: etudiantState }) => state.etudiant.Etudiants;
+
 
 export const getPromotions = (state: { etudiant: etudiantState }) => state.etudiant.Promotions;
 

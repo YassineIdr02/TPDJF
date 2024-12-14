@@ -1,6 +1,11 @@
-import React, { useState } from "react";
-import { useAppDispatch } from "../hooks/hooks";
-import { Etudiant, updateEtudiantAsync } from "../features/EtudiantSlice";
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import {
+  Etudiant,
+  getPromotionAsync,
+  getPromotions,
+  updateEtudiantAsync,
+} from "../features/EtudiantSlice";
 
 interface UpdateStudentProps {
   studentData: Etudiant;
@@ -22,8 +27,27 @@ const UpdateStudent = ({ studentData }: UpdateStudentProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(updateEtudiantAsync(student));
+    if (
+      student.noEtudiantUbo &&
+      student.adresse &&
+      student.dateNaissance &&
+      student.email &&
+      student.lieuNaissance &&
+      student.nom &&
+      student.prenom &&
+      student.sexe &&
+      student.telephone &&
+      student.anneePro !== -1 &&
+      student.universite
+    )
+      dispatch(updateEtudiantAsync(student));
   };
+
+  const promotions = useAppSelector(getPromotions);
+
+  useEffect(() => {
+    dispatch(getPromotionAsync());
+  }, [dispatch]);
 
   return (
     <div className="flex justify-center items-center w-full h-screen backdrop-blur-sm">
@@ -80,6 +104,26 @@ const UpdateStudent = ({ studentData }: UpdateStudentProps) => {
               className="grow"
               placeholder="Numéro étudiant UBO"
             />
+          </label>
+
+          <label className="flex items-center gap-2">
+            <span className="font-semibold">Promotion</span>
+            <select
+              defaultValue="default"
+              className="select w-full max-w-full"
+              name="anneePro"
+              value={student.anneePro}
+              onChange={handleChange}
+            >
+              <option value="default" disabled>
+                Sélectionnez une promotion
+              </option>
+              {promotions.map((promotion) => (
+                <option key={promotion.anneePro} value={promotion.anneePro}>
+                  {promotion.anneePro} : {promotion.siglePro}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label className="input input-bordered flex items-center gap-2">

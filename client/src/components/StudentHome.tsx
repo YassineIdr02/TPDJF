@@ -6,6 +6,7 @@ import {
   getPromotionAsync,
   getPromotions,
   getEtudiants,
+  getEtudiantByPromotionAsync,
 } from "../features/EtudiantSlice";
 import { IoMdAdd } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
@@ -34,13 +35,21 @@ const StudentHome = () => {
     index: number;
   }>({ etudiant: null, index: -1 });
 
+  const [anneePro, setAnneePro] = useState<Number>(-1);
+
   const updateStudentModalRef = useRef<HTMLDialogElement | null>(null);
   const etudiantDetailsModalRef = useRef<HTMLDialogElement | null>(null);
 
   useEffect(() => {
-    dispatch(getEtudiantAsync());
+    if (anneePro !== -1) {
+      
+      
+      dispatch(getEtudiantByPromotionAsync(anneePro));
+    } else if (anneePro === -1) {
+      dispatch(getEtudiantAsync());
+    }
     dispatch(getPromotionAsync());
-  }, [dispatch]);
+  }, [dispatch, anneePro]);
 
   useEffect(() => {
     if (
@@ -79,12 +88,21 @@ const StudentHome = () => {
     dispatch(getEtudiantAsync());
   };
 
+  const handlePromotionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPromotion = e.target.value;
+    setAnneePro(Number(selectedPromotion));
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5 items-center pt-32 mx-auto rounded-s-3xl bg-white w-full h-screen">
         <h1>Liste des étudiants</h1>
         <div className="flex flex-row items-center justify-between gap-5 w-full px-14">
-          <select defaultValue="default" className="select">
+        <select
+            defaultValue="default"
+            className="select"
+            onChange={handlePromotionChange} 
+          >
             <option value="default" disabled>
               Sélectionnez une promotion
             </option>

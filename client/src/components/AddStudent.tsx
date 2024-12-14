@@ -21,7 +21,7 @@ const AddStudent = () => {
     nationalite: "Française",
     universite: "",
     adresse: "",
-    anneePro: -1,  
+    anneePro: -1,
     noEtudiantNat: 0,
   });
 
@@ -119,16 +119,22 @@ const AddStudent = () => {
 
             <label className="flex items-center gap-2">
               <span className="font-semibold">Promotion</span>
-              <select defaultValue="default" className="select" name="anneePro" value={student.anneePro} onChange={handleChange}>
-            <option value="default" disabled>
-              Sélectionnez une promotion
-            </option>
-            {promotions.map((promotion) => (
-              <option key={promotion.anneePro} value={promotion.anneePro}>
-                {promotion.anneePro} : {promotion.siglePro}
-              </option>
-            ))}
-          </select>
+              <select
+                defaultValue="default"
+                className="select w-full max-w-full"
+                name="anneePro"
+                value={student.anneePro}
+                onChange={handleChange}
+              >
+                <option value="default" disabled>
+                  Sélectionnez une promotion
+                </option>
+                {promotions.map((promotion) => (
+                  <option key={promotion.anneePro} value={promotion.anneePro}>
+                    {promotion.anneePro} : {promotion.siglePro}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className="input input-bordered flex items-center gap-2">
