@@ -34,7 +34,6 @@ const StudentHome = () => {
     index: number;
   }>({ etudiant: null, index: -1 });
 
-  const addStudentModalRef = useRef<HTMLDialogElement | null>(null);
   const updateStudentModalRef = useRef<HTMLDialogElement | null>(null);
   const etudiantDetailsModalRef = useRef<HTMLDialogElement | null>(null);
 
