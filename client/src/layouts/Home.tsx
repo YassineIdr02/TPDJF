@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
 import { FaUserGraduate } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaClipboardUser } from "react-icons/fa6";
+import { Link, Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "../lib/utils";
-import StudentHome from "../components/StudentHome";
 
 export function Home() {
   const links = [
@@ -15,7 +15,13 @@ export function Home() {
         <FaUserGraduate className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-    
+    {
+      label: "Promotions",
+      href: "/promotions",
+      icon: (
+        <FaClipboardUser className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
   ];
   const [open, setOpen] = useState(false);
   return (
@@ -37,7 +43,7 @@ export function Home() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <StudentHome />
+      <Outlet />
     </div>
   );
 }

@@ -106,6 +106,9 @@ const StudentHome = () => {
             <option value="default" disabled>
               Sélectionnez une promotion
             </option>
+            <option value={-1}>
+              Tous les promotions
+            </option>
             {promotions.map((promotion) => (
               <option key={promotion.anneePro} value={promotion.anneePro}>
                 {promotion.anneePro} : {promotion.siglePro}
@@ -146,7 +149,7 @@ const StudentHome = () => {
                     {etudiant.nationalite || "Française"}
                   </td>
                   <td className="px-4 py-2">{etudiant.email}</td>
-                  <td className="px-4 py-2">{etudiant.anneePro}</td>
+                  <td className="px-4 py-2">{etudiant.siglePro}</td>
                   <td className="px-4 py-2">{etudiant.universite}</td>
                   <td
                     className="flex gap-3 justify-center items-center"
@@ -175,8 +178,6 @@ const StudentHome = () => {
                         handleClickUpdate({} as Etudiant, index);
                         handleClick(etudiant, index);
                         openModal(`inspect-${etudiant.noEtudiantNat}`);
-                        
-                        
                       }}
                     />
                   </td>

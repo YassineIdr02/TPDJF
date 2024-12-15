@@ -17,13 +17,13 @@ export interface Etudiant {
     universite: string;
     anneePro: number;
     adresse: string;
+    siglePro: string;
 }
 
 export interface Promotion {
-    id: number;
-    anneePro: string;
+    anneePro: number;
     siglePro: string;
-    nbEtudiant: number;
+    nbEtuSouhaite: number;
     dateRentree: string;
     lieuRentree: string;
 }
@@ -52,6 +52,48 @@ export const getPromotionAsync = createAsyncThunk<Promotion[], void, { rejectVal
         }
     }
 );
+
+export const postPromotionsAsync = createAsyncThunk<Promotion, Promotion, { rejectValue: string }>(
+    "promotions/postEtudiantAsync",
+    async (promotion, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${BASE_URL}/promotions`, promotion);
+            console.log(response);
+            
+            return response.data;
+        } catch (error: any) {
+            console.error("Error posting promotion:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while posting the promotion.");
+        }
+    }
+);
+
+export const updatePromotionAsync = createAsyncThunk<Promotion, Promotion, { rejectValue: string }>(
+    "promotions/updateEtudiantAsync",
+    async (promotion, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${BASE_URL}/promotions/${promotion.anneePro}`, promotion);
+            return response.data;
+        } catch (error: any) {
+            console.error("Error updating promotion:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while updating the promotion.");
+        }
+    }
+);
+
+export const deletePromotionAsync = createAsyncThunk<Promotion, Number, { rejectValue: string }>(
+    "promotions/deleteEtudiantAsync",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axios.delete(`${BASE_URL}/promotions/${id}`);
+            return response.data;
+        } catch (error: any) {
+            console.error("Error deleting student:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while deleting the student.");
+        }
+    }
+);
+
 
 export const getEtudiantAsync = createAsyncThunk<Etudiant[], void, { rejectValue: string }>(
     "etudiants/getEtudiantAsync",

@@ -56,7 +56,7 @@ const EtudiantDetails = ({ etudiant }: EtudiantProp) => {
           </div>
           <div className="text-base font-medium text-gray-900">
             <dt>Promotion :</dt>
-            <dd className="mt-1 text-gray-500">{etudiant.anneePro}</dd>
+            <dd className="mt-1 text-gray-500">{etudiant.siglePro}</dd>
           </div>
           <div className="text-base font-medium text-gray-900">
             <dt>Adresse :</dt>

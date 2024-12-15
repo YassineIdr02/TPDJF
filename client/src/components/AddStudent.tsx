@@ -21,6 +21,7 @@ const AddStudent = () => {
     nationalite: "Française",
     universite: "",
     adresse: "",
+    siglePro: "",
     anneePro: -1,
     noEtudiantNat: 0,
   });
@@ -45,7 +46,8 @@ const AddStudent = () => {
       student.sexe &&
       student.telephone &&
       student.anneePro !== -1 &&
-      student.universite
+      student.universite &&
+      student.siglePro
     ) {
       dispatch(postEtudiantAsync(student));
     }
