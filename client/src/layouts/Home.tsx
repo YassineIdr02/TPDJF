@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
 import { FaUserGraduate } from "react-icons/fa";
-import { FaClipboardUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "../lib/utils";
@@ -16,13 +15,7 @@ export function Home() {
         <FaUserGraduate className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-    {
-      label: "Promotions",
-      href: "#",
-      icon: (
-        <FaClipboardUser className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
+    
   ];
   const [open, setOpen] = useState(false);
   return (
