@@ -46,12 +46,13 @@ const AddStudent = () => {
       student.sexe &&
       student.telephone &&
       student.anneePro !== -1 &&
-      student.universite &&
-      student.siglePro
+      student.universite 
     ) {
-      dispatch(postEtudiantAsync(student));
+      dispatch(postEtudiantAsync(student)).then(() => {
+        dispatch(getEtudiantAsync())
+      });
     }
-    dispatch(getEtudiantAsync());
+
   };
   const promotions = useAppSelector(getPromotions);
 

@@ -4,9 +4,10 @@ import { useAppDispatch } from "../../hooks/hooks";
 
 interface UpdatePromotioProps {
   promotionData: Promotion;
+  dispatchPromotion : () => void;
 }
 
-const UpdatePromotion = ({ promotionData }: UpdatePromotioProps) => {
+const UpdatePromotion = ({ promotionData,dispatchPromotion }: UpdatePromotioProps) => {
   const dispatch = useAppDispatch();
   const [promotion, setPromotion] = useState<Promotion>({
     ...promotionData,
@@ -28,8 +29,11 @@ const UpdatePromotion = ({ promotionData }: UpdatePromotioProps) => {
       promotion.nbEtuSouhaite &&
       promotion.dateRentree &&
       promotion.lieuRentree
-    )
-      dispatch(updatePromotionAsync(promotion));
+    ){
+      dispatch(updatePromotionAsync(promotion)).then(() => {
+       dispatchPromotion()
+      });
+    }
   };
 
   return (

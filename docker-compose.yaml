@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  oracle-xe:
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: oracle-xe
+    environment:
+      - ORACLE_PWD=oracle
+      - ORACLE_CHARACTERSET=AL32UTF8
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    volumes:
+      - spi_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1521"]
+      interval: 10s
+      retries: 5
+      timeout: 10s
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - oracle-xe
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8092:8092"
+    depends_on:
+      - oracle-xe
+
+volumes:
+  spi_data:

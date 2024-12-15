@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useAppDispatch } from '../../hooks/hooks';
-import { postPromotionsAsync } from '../../features/EtudiantSlice';
+import { getPromotionAsync, postPromotionsAsync } from '../../features/EtudiantSlice';
 
 
 const AddPromotion = () => {
@@ -27,7 +27,9 @@ const AddPromotion = () => {
         promotion.dateRentree &&
         promotion.lieuRentree
         ) {
-        dispatch(postPromotionsAsync(promotion));
+        dispatch(postPromotionsAsync(promotion)).then(() => {
+          dispatch(getPromotionAsync())
+        });
         }
     
   };

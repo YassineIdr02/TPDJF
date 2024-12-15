@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import {
   Etudiant,
+  getEtudiantAsync,
   getPromotionAsync,
   getPromotions,
   updateEtudiantAsync,
@@ -39,8 +40,11 @@ const UpdateStudent = ({ studentData }: UpdateStudentProps) => {
       student.telephone &&
       student.anneePro !== -1 &&
       student.universite
-    )
-      dispatch(updateEtudiantAsync(student));
+    ) {
+      dispatch(updateEtudiantAsync(student)).then(() => {
+        dispatch(getEtudiantAsync())
+      });
+    }
   };
 
   const promotions = useAppSelector(getPromotions);

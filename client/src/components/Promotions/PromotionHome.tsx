@@ -20,6 +20,9 @@ import UpdatePromotion from "./UpdatePromotion";
 const PromotionHome = () => {
   const dispatch = useAppDispatch();
   const promotions = useAppSelector(getPromotions);
+  const dispatchPromotion = () => {
+    dispatch(getPromotionAsync())
+}
 
   const [modal, setModal] = useState<{
     promotion: Promotion | null;
@@ -136,7 +139,7 @@ const PromotionHome = () => {
                     id={`updatePromotion-${promotion.anneePro}`}
                     className="modal"
                   >
-                    <UpdatePromotion promotionData={promotion} />
+                    <UpdatePromotion promotionData={promotion} dispatchPromotion={dispatchPromotion} />
                   </dialog>
                   
                 </tr>
