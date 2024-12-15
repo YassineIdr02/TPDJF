@@ -33,6 +33,7 @@ const AddStudent = () => {
   };
 
   const handleSubmit = () => {
+    console.log(student);
     if (
       student.noEtudiantUbo &&
       student.adresse &&
@@ -45,8 +46,9 @@ const AddStudent = () => {
       student.telephone &&
       student.anneePro !== -1 &&
       student.universite
-    )
+    ) {
       dispatch(postEtudiantAsync(student));
+    }
     dispatch(getEtudiantAsync());
   };
   const promotions = useAppSelector(getPromotions);
@@ -120,13 +122,13 @@ const AddStudent = () => {
             <label className="flex items-center gap-2">
               <span className="font-semibold">Promotion</span>
               <select
-                defaultValue="default"
+                required
                 className="select w-full max-w-full"
                 name="anneePro"
-                value={student.anneePro}
+                value={student.anneePro === -1 ? "" : student.anneePro}
                 onChange={handleChange}
               >
-                <option value="default" disabled>
+                <option value="" disabled>
                   Sélectionnez une promotion
                 </option>
                 {promotions.map((promotion) => (

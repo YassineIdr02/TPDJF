@@ -45,12 +45,10 @@ export const getPromotionAsync = createAsyncThunk<Promotion[], void, { rejectVal
     async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get<Promotion[]>(`${BASE_URL}/promotions`);
-            console.log(response);
-
             return response.data;
         } catch (error: any) {
-            console.error("Error fetching machines:", error);
-            return rejectWithValue(error.response?.data || "An error occurred while fetching machines.");
+            console.error("Error fetching students:", error);
+            return rejectWithValue(error.response?.data || "An error occurred while fetching students.");
         }
     }
 );
@@ -60,8 +58,6 @@ export const getEtudiantAsync = createAsyncThunk<Etudiant[], void, { rejectValue
     async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get<Etudiant[]>(`${BASE_URL}/etudiants`);
-            console.log("hhhhhhh");
-
             return response.data;
         } catch (error: any) {
             console.error("Error fetching students:", error);
@@ -74,9 +70,7 @@ export const getEtudiantByPromotionAsync = createAsyncThunk<Etudiant[], Number, 
     "students/getEtudiantByPromotionAsync",
     async (anneePro, { rejectWithValue }) => {
         try {
-            const response = await axios.get<Etudiant[]>(`${BASE_URL}/promotions/students/${anneePro}`);
-            console.log("prooooo", anneePro);
-            
+            const response = await axios.get<Etudiant[]>(`${BASE_URL}/promotions/students/${anneePro}`);            
             return response.data;
         } catch (error: any) {
             console.error("Error fetching students:", error);
@@ -90,6 +84,8 @@ export const postEtudiantAsync = createAsyncThunk<Etudiant, Etudiant, { rejectVa
     async (etudiant, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${BASE_URL}/etudiants`, etudiant);
+            console.log(response);
+            
             return response.data;
         } catch (error: any) {
             console.error("Error posting student:", error);
